@@ -9,13 +9,13 @@
   padding: 0;
 }
 
-/* Override hidden for overlays — overlays manage their own display */
-.modal-overlay.hidden,
-.watch-overlay.hidden,
-.auth-form.hidden {
+/* Universal hidden utility — any element with class="hidden" is invisible */
+.hidden {
   display: none !important;
+  pointer-events: none !important;
 }
 
+/* Modal overlay (only visible when .hidden is removed by JS) */
 .modal-overlay {
   display: flex;
 }
