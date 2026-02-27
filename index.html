@@ -139,14 +139,35 @@
                     throw new Error("You must be logged in to upload a video.");
                 }
 
-                const url = URL.createObjectURL(file);
+                if (btn) btn.innerHTML = 'Uploading Media to Storage...';
 
-                // Insert into Supabase
+                // 1. Upload file to Supabase Storage Bucket ('videos')
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+                const { error: uploadError } = await client.storage
+                    .from('videos')
+                    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+                if (uploadError) {
+                    throw new Error('Storage upload failed (Does the "videos" bucket exist?): ' + uploadError.message);
+                }
+
+                // 2. Get Public URL
+                const { data: urlData } = client.storage
+                    .from('videos')
+                    .getPublicUrl(fileName);
+
+                const publicUrl = urlData.publicUrl;
+
+                if (btn) btn.innerHTML = 'Saving Database Record...';
+
+                // 3. Insert Database Record
                 const { data: insertedData, error: insertError } = await client
                     .from('videos')
                     .insert([{
                         title: title,
-                        src: url,
+                        src: publicUrl,
                         thumbnail: '',
                         duration: '00:00',
                         uploader_id: userData.user.id
