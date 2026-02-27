@@ -85,6 +85,69 @@ function fmtLikes(n) {
 function isFav(id) { return state.favorites.includes(id); }
 function isLiked(id) { return !!state.likes[id]; }
 
+// ─── STANDALONE AUTH FUNCTIONS (callable from HTML onsubmit) ─────────────────
+// These bypass bindModal() entirely so auth works even if JS init has issues.
+
+async function handleSignIn(event) {
+    event.preventDefault();
+    const email = document.getElementById('siUsername').value.trim();
+    const password = document.getElementById('siPassword').value;
+    const btn = document.getElementById('authSubmitSignIn');
+    try {
+        if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; }
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', data.user.id).single();
+        state.user = { id: data.user.id, username: profile?.username || email.split('@')[0], email };
+        state.isAdmin = profile?.is_admin || false;
+        document.getElementById('signInModal').classList.add('hidden');
+        updateAuthUI();
+    } catch (err) {
+        alert(err.message);
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+    }
+}
+
+async function handleSignUp(event) {
+    event.preventDefault();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirm').value;
+    const btn = document.getElementById('authSubmitRegister');
+    if (password !== confirm) { alert('Passwords do not match'); return; }
+    try {
+        if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
+        const username = email.split('@')[0];
+        const { data, error } = await supabase.auth.signUp({
+            email, password,
+            options: { data: { username } }
+        });
+        if (error) throw error;
+        alert('Account created! Check your email to confirm, then sign in.');
+        document.getElementById('formRegister').classList.add('hidden');
+        document.getElementById('formSignIn').classList.remove('hidden');
+    } catch (err) {
+        alert(err.message);
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Create Account'; }
+    }
+}
+
+async function handleForgotPassword(event) {
+    event.preventDefault();
+    const email = document.getElementById('forgotEmail').value.trim();
+    try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) throw error;
+        alert('Password reset email sent! Check your inbox.');
+        document.getElementById('formForgot').classList.add('hidden');
+        document.getElementById('formSignIn').classList.remove('hidden');
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
 async function init() {

@@ -314,7 +314,7 @@
 
             <!-- Sign In Form -->
             <!-- Sign In Form -->
-            <form class="auth-form" id="formSignIn">
+            <form class="auth-form" id="formSignIn" onsubmit="handleSignIn(event)">
                 <p class="auth-form-title">Welcome back</p>
                 <div class="input-group">
                     <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -365,7 +365,7 @@
             </form>
 
             <!-- Forgot Password Form -->
-            <form class="auth-form hidden" id="formForgot">
+            <form class="auth-form hidden" id="formForgot" onsubmit="handleForgotPassword(event)">
                 <!-- Step 1: Email -->
                 <div id="forgotStep1">
                     <p class="auth-form-title">Reset Password</p>
@@ -483,7 +483,7 @@
 
             <!-- Register Form -->
             <!-- Register Form -->
-            <form class="auth-form hidden" id="formRegister">
+            <form class="auth-form hidden" id="formRegister" onsubmit="handleSignUp(event)">
                 <p class="auth-form-title">Create account</p>
                 <div class="input-group">
                     <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
