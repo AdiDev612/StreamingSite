@@ -19,7 +19,8 @@
     <!-- TOP NAV -->
     <header class="topbar">
         <div class="topbar-left">
-            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu"
+                onclick="document.getElementById('sidebar').classList.toggle('expanded')">
                 <span></span><span></span><span></span>
             </button>
             <a href="#" class="logo">StreamVault</a>
@@ -351,7 +352,7 @@
                         onclick="event.preventDefault();document.getElementById('formSignIn').classList.add('hidden');document.getElementById('formForgot').classList.remove('hidden')">Forgot
                         password?</a>
                 </div>
-                <button type="submit" class="auth-submit-btn" id="authSubmitSignIn">
+                <button type="button" class="auth-submit-btn" id="authSubmitSignIn" onclick="handleSignIn(event)">
                     <span>Sign In</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="9 18 15 12 9 6" />
@@ -537,8 +538,7 @@
                 </div>
                 <label class="remember-me"><input type="checkbox" id="agreeTerms" /> I agree to the <a href="#">Terms of
                         Service</a></label>
-                <button type="submit" class="auth-submit-btn" id="authSubmitRegister"
-                    onclick="if(event.type!=='submit')handleSignUp(event)">
+                <button type="button" class="auth-submit-btn" id="authSubmitRegister" onclick="handleSignUp(event)">
                     <span>Create Account</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="9 18 15 12 9 6" />
