@@ -535,9 +535,10 @@
                         </svg>
                     </button>
                 </div>
-                <label class="remember-me"><input type="checkbox" id="agreeTerms" required /> I agree to the <a
-                        href="#">Terms of Service</a></label>
-                <button type="submit" class="auth-submit-btn" id="authSubmitRegister">
+                <label class="remember-me"><input type="checkbox" id="agreeTerms" /> I agree to the <a href="#">Terms of
+                        Service</a></label>
+                <button type="submit" class="auth-submit-btn" id="authSubmitRegister"
+                    onclick="if(event.type!=='submit')handleSignUp(event)">
                     <span>Create Account</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="9 18 15 12 9 6" />
