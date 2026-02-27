@@ -898,6 +898,12 @@ body {
   padding: 16px;
 }
 
+/* This MUST come after .modal-overlay to win the cascade */
+.modal-overlay.hidden {
+  display: none !important;
+  pointer-events: none !important;
+}
+
 .modal {
   background: #141414;
   border: 1px solid #2a2a2a;
