@@ -645,17 +645,11 @@ function bindSearch() {
 function bindUpload() {
     const trigger = document.getElementById('uploadTrigger');
     const fileInput = document.getElementById('videoFileInput');
-    const form = document.getElementById('uploadForm');
+    const detailsCard = document.getElementById('uploadDetailsCard');
+    const fileNameDisplay = document.getElementById('selectedFileName');
     const submit = document.getElementById('submitUpload');
 
-    trigger.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files[0]) {
-            form.classList.remove('hidden');
-            trigger.textContent = fileInput.files[0].name;
-        }
-    });
+    if (!trigger || !fileInput || !submit) return;
 
     submit.addEventListener('click', () => {
         const title = document.getElementById('uploadTitle').value.trim();
@@ -675,10 +669,13 @@ function bindUpload() {
         state.videos.unshift(newVideo);
 
         // Reset form
-        form.classList.add('hidden');
+        if (detailsCard) detailsCard.classList.add('hidden');
+        if (fileNameDisplay) {
+            fileNameDisplay.style.display = 'none';
+            fileNameDisplay.textContent = '';
+        }
         document.getElementById('uploadTitle').value = '';
         document.getElementById('uploadTags').value = '';
-        trigger.textContent = 'Select File';
         fileInput.value = '';
 
         // Add admin log
@@ -687,14 +684,18 @@ function bindUpload() {
         }
 
         // Go home and show new video
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-home').classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelector('[data-page="home"]').classList.add('active');
-        showPage('home');
 
         // Only alert if we're not doing the silent thumbnail upload
         if (title !== "silent_thumbnail_upload") {
             alert(`"${title}" uploaded successfully!`);
         }
+
+        // Re-render
+        renderGrid(state.videos, 'videoGrid');
     });
 }
 
