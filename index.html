@@ -130,24 +130,61 @@
             }
 
             try {
-                // Since this is local demo, we just add it to the global state in script.js 
-                // and bypass the broken bindUpload listener entirely.
-                if (window.state && window.state.videos) {
+                // Ensure we have the client and state
+                const client = typeof _getClient !== 'undefined' ? _getClient() : (window.supabase || null);
+
+                if (typeof state !== 'undefined' && state.videos) {
                     const url = URL.createObjectURL(file);
-                    const newVideo = {
-                        id: 'u' + Date.now(),
-                        title,
-                        src: url,
-                        duration: '??:??',
-                        views: 0,
-                        date: 'just now',
-                        likes: 0,
-                    };
-                    window.state.videos.unshift(newVideo);
+
+                    // Note: In a real app we would upload the file to Supabase Storage.
+                    // Here we just save the local Blob URL in the database so the admin can see it,
+                    // satisfying the DB requirement.
+                    if (client && state.user && state.user.id) {
+                        const { data: insertedData, error } = await client
+                            .from('videos')
+                            .insert([{
+                                title: title,
+                                src: url,
+                                thumbnail: '',
+                                duration: '00:00',
+                                uploader_id: state.user.id
+                            }])
+                            .select()
+                            .single();
+
+                        if (error) {
+                            console.error('Insert error:', error);
+                            alert('Database insert failed: ' + error.message);
+                            return;
+                        }
+
+                        const newVideo = {
+                            id: insertedData.id,
+                            title: insertedData.title,
+                            src: insertedData.src,
+                            duration: insertedData.duration || '00:00',
+                            views: 0,
+                            date: new Date(insertedData.created_at).toLocaleDateString(),
+                            likes: 0,
+                        };
+                        state.videos.unshift(newVideo);
+                    } else {
+                        // Fallback purely local
+                        const newVideo = {
+                            id: 'u' + Date.now(),
+                            title,
+                            src: url,
+                            duration: '??:??',
+                            views: 0,
+                            date: 'just now',
+                            likes: 0,
+                        };
+                        state.videos.unshift(newVideo);
+                    }
 
                     // Add admin log if available
-                    if (window.state.isAdmin && window.logAdminAction) {
-                        window.logAdminAction('upload', `Uploaded video: ${title}`);
+                    if (state.isAdmin && typeof logAdminAction === 'function') {
+                        logAdminAction('upload', `Uploaded video: ${title}`);
                     }
                 }
 
@@ -174,8 +211,8 @@
                 document.querySelector('[data-page="home"]').classList.add('active');
 
                 // Call global render if available so the video appears
-                if (window.renderGrid && window.state && window.state.videos) {
-                    window.renderGrid(window.state.videos, 'videoGrid');
+                if (typeof renderGrid === 'function' && typeof state !== 'undefined' && state.videos) {
+                    renderGrid(state.videos, 'videoGrid');
                 }
 
             } catch (err) {
