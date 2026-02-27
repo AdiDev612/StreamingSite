@@ -112,6 +112,83 @@
             }
         }
 
+        async function handlePublishVideo(event) {
+            if (event) event.preventDefault();
+
+            const title = document.getElementById('uploadTitle').value.trim();
+            const tags = document.getElementById('uploadTags').value.trim();
+            const fileInput = document.getElementById('videoFileInput');
+            const file = fileInput.files[0];
+            const btn = document.getElementById('submitUpload');
+
+            if (!title) { alert('Please enter a video title.'); return; }
+            if (!file) { alert('Please select a video file.'); return; }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = 'Uploading...';
+            }
+
+            try {
+                // Since this is local demo, we just add it to the global state in script.js 
+                // and bypass the broken bindUpload listener entirely.
+                if (window.state && window.state.videos) {
+                    const url = URL.createObjectURL(file);
+                    const newVideo = {
+                        id: 'u' + Date.now(),
+                        title,
+                        src: url,
+                        duration: '??:??',
+                        views: 0,
+                        date: 'just now',
+                        likes: 0,
+                    };
+                    window.state.videos.unshift(newVideo);
+
+                    // Add admin log if available
+                    if (window.state.isAdmin && window.logAdminAction) {
+                        window.logAdminAction('upload', `Uploaded video: ${title}`);
+                    }
+                }
+
+                // Reset form
+                const detailsCard = document.getElementById('uploadDetailsCard');
+                const fileNameDisplay = document.getElementById('selectedFileName');
+
+                if (detailsCard) detailsCard.classList.add('hidden');
+                if (fileNameDisplay) {
+                    fileNameDisplay.style.display = 'none';
+                    fileNameDisplay.textContent = '';
+                }
+
+                document.getElementById('uploadTitle').value = '';
+                document.getElementById('uploadTags').value = '';
+                fileInput.value = '';
+
+                alert(`"${title}" published successfully!`);
+
+                // Route home via DOM
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-home').classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector('[data-page="home"]').classList.add('active');
+
+                // Call global render if available so the video appears
+                if (window.renderGrid && window.state && window.state.videos) {
+                    window.renderGrid(window.state.videos, 'videoGrid');
+                }
+
+            } catch (err) {
+                console.error("Upload error:", err);
+                alert("Failed to publish video.");
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Publish Video';
+                }
+            }
+        }
+
         async function handleSignUp(event) {
             if (event) event.preventDefault();
             const client = _getClient(); if (!client) return;
@@ -333,7 +410,7 @@
                             style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.95rem;" />
                     </div>
 
-                    <button class="submit-btn" id="submitUpload"
+                    <button class="submit-btn" id="submitUpload" onclick="handlePublishVideo(event)"
                         style="background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.2s;"
                         onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
                         Publish Video
