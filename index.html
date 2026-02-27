@@ -89,6 +89,10 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 document.querySelector('.nav-item[data-page="home"]').classList.add('active');
 
+                // Clear form inputs
+                ['siUsername', 'siPassword', 'regEmail', 'regPassword', 'regConfirm', 'forgotEmail']
+                    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+
             } catch (err) {
                 console.error('Sign out error:', err);
             } finally {
