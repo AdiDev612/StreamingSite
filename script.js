@@ -7,10 +7,45 @@
 
 'use strict';
 
-// ─── SUPABASE INITIALIZATION ────────────────────────────────────────────────
+// ─── SUPABASE INITIALIZATION ─────────────────────────────────────────────────
+// Guard against CDN load failure — if Supabase SDK didn't load,
+// create a no-op stub so the UI still initializes and is clickable.
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxpZXprZndvYXFzY2FjY2RvdmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwOTM5OTgsImV4cCI6MjA4NzY2OTk5OH0.dZOe660pdzEJpwDuAWW6DMhRafi6GoXmO0bbwYRIg50';
 const SUPABASE_URL = 'https://liezkfwoaqscaccdovcf.supabase.co';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Null-safe wrapper: returns a chained object that resolves to empty data
+function makeNoop() {
+    const noop = () => makeNoop();
+    const noopAsync = async () => ({ data: null, error: new Error('Supabase SDK not loaded'), count: 0 });
+    return new Proxy({}, {
+        get(_, prop) {
+            // Special case for auth
+            if (prop === 'auth') return {
+                getSession: noopAsync,
+                signInWithPassword: noopAsync,
+                signUp: noopAsync,
+                signOut: noopAsync,
+                updateUser: noopAsync,
+                resetPasswordForEmail: noopAsync,
+                onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+            };
+            // Everything else chains to another noop
+            return noopAsync;
+        }
+    });
+}
+
+let supabase;
+try {
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+        throw new Error('Supabase SDK not available on window');
+    }
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('Supabase client initialized.');
+} catch (e) {
+    console.error('Supabase failed to initialize, using offline mode:', e.message);
+    supabase = makeNoop();
+}
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 
