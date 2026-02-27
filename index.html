@@ -227,7 +227,7 @@
 
             } catch (err) {
                 console.error("Upload error:", err);
-                alert("Failed to publish video.");
+                alert("Upload Failed: " + err.message);
             } finally {
                 if (btn) {
                     btn.disabled = false;
