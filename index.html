@@ -300,7 +300,8 @@
     <!-- SIGN IN / SIGN UP MODAL -->
     <div class="modal-overlay hidden" id="signInModal">
         <div class="modal">
-            <button class="modal-close" id="closeModal" aria-label="Close">
+            <button class="modal-close" id="closeModal" aria-label="Close"
+                onclick="document.getElementById('signInModal').classList.add('hidden')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
@@ -346,7 +347,9 @@
                 </div>
                 <div class="form-options">
                     <label class="remember-me"><input type="checkbox" id="rememberMe" /> Remember me</label>
-                    <a href="#" class="forgot-link" id="goToForgot">Forgot password?</a>
+                    <a href="#" class="forgot-link" id="goToForgot"
+                        onclick="event.preventDefault();document.getElementById('formSignIn').classList.add('hidden');document.getElementById('formForgot').classList.remove('hidden')">Forgot
+                        password?</a>
                 </div>
                 <button type="submit" class="auth-submit-btn" id="authSubmitSignIn">
                     <span>Sign In</span>
@@ -354,7 +357,9 @@
                         <polyline points="9 18 15 12 9 6" />
                     </svg>
                 </button>
-                <button type="button" class="auth-link-btn" id="goToRegister">Don't have an account?
+                <button type="button" class="auth-link-btn" id="goToRegister"
+                    onclick="document.getElementById('formSignIn').classList.add('hidden');document.getElementById('formRegister').classList.remove('hidden')">Don't
+                    have an account?
                     <strong>Create
                         one</strong></button>
             </form>
@@ -376,13 +381,16 @@
                         <input type="email" id="forgotEmail" placeholder="Email address" required />
                     </div>
 
-                    <button type="button" class="auth-submit-btn" id="forgotSendCodeBtn">
-                        <span>Send Recovery Code</span>
+                    <button type="button" class="auth-submit-btn" id="forgotSendCodeBtn"
+                        onclick="document.getElementById('formForgot').submit()">
+                        <span>Send Recovery Email</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="9 18 15 12 9 6" />
                         </svg>
                     </button>
-                    <button type="button" class="auth-link-btn" id="forgotToSignIn">Back to <strong>Sign
+                    <button type="button" class="auth-link-btn" id="forgotToSignIn"
+                        onclick="document.getElementById('formForgot').classList.add('hidden');document.getElementById('formSignIn').classList.remove('hidden')">Back
+                        to <strong>Sign
                             in</strong></button>
                 </div>
 
@@ -535,7 +543,9 @@
                         <polyline points="9 18 15 12 9 6" />
                     </svg>
                 </button>
-                <button type="button" class="auth-link-btn" id="goToSignIn">Already have an account?
+                <button type="button" class="auth-link-btn" id="goToSignIn"
+                    onclick="document.getElementById('formRegister').classList.add('hidden');document.getElementById('formSignIn').classList.remove('hidden')">Already
+                    have an account?
                     <strong>Sign
                         in</strong></button>
             </form>
