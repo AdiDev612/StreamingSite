@@ -40,7 +40,11 @@
                 if (error) throw error;
                 document.getElementById('signInModal').classList.add('hidden');
                 const topBtn = document.getElementById('signInBtn');
-                if (topBtn) topBtn.textContent = email.charAt(0).toUpperCase();
+                if (topBtn) {
+                    topBtn.textContent = email.charAt(0).toUpperCase();
+                    topBtn.classList.remove('sign-in-btn');
+                    topBtn.classList.add('user-avatar', 'logged-in');
+                }
             } catch (err) {
                 alert('Sign in failed: ' + err.message);
             } finally {
@@ -113,7 +117,8 @@
                 </button>
             </div>
             <button class="sign-in-btn" id="signInBtn"
-                onclick="document.getElementById('signInModal').classList.remove('hidden')">Sign In</button>
+                onclick="if(this.classList.contains('logged-in')){document.getElementById('page-settings').classList.add('active');document.querySelectorAll('.page').forEach(p=>{if(p.id!=='page-settings')p.classList.remove('active')});}else{document.getElementById('signInModal').classList.remove('hidden')}">Sign
+                In</button>
         </div>
     </header>
 
