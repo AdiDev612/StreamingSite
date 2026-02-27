@@ -209,7 +209,8 @@
                 </svg>
                 <span>History</span>
             </a>
-            <a href="#" class="nav-item admin-only hidden" data-page="dashboard" title="Dashboard">
+            <a href="#" class="nav-item admin-only hidden" data-page="dashboard" title="Dashboard"
+                onclick="event.preventDefault();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));var pg=document.getElementById('page-dashboard');if(pg)pg.classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="7" height="7"></rect>
                     <rect x="14" y="3" width="7" height="7"></rect>
@@ -218,7 +219,8 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="nav-item admin-only hidden" data-page="upload" title="Upload">
+            <a href="#" class="nav-item admin-only hidden" data-page="upload" title="Upload"
+                onclick="event.preventDefault();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));var pg=document.getElementById('page-upload');if(pg)pg.classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="16 16 12 12 8 16" />
                     <line x1="12" y1="12" x2="12" y2="21" />
@@ -226,7 +228,8 @@
                 </svg>
                 <span>Upload</span>
             </a>
-            <a href="#" class="nav-item admin-only hidden" data-page="admin-logs" title="Admin Logs">
+            <a href="#" class="nav-item admin-only hidden" data-page="admin-logs" title="Admin Logs"
+                onclick="event.preventDefault();document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));var pg=document.getElementById('page-admin-logs');if(pg)pg.classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
