@@ -280,23 +280,64 @@
         </section>
 
         <!-- UPLOAD PAGE -->
-        <section class="page admin-only hidden" id="page-upload">
-            <div class="upload-area">
-                <div class="upload-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <polyline points="16 16 12 12 8 16" />
-                        <line x1="12" y1="12" x2="12" y2="21" />
-                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-                    </svg>
+        <section class="page admin-only hidden" id="page-upload" style="padding: 20px;">
+            <div class="page-header" style="margin-bottom: 24px;">
+                <h2>Upload Video</h2>
+            </div>
+
+            <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+
+                <!-- Card 1: Select File -->
+                <div class="settings-group"
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px 24px; text-align: center;">
+                    <div class="upload-icon" style="color: var(--accent); margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            style="width: 56px; height: 56px; display: inline-block;">
+                            <polyline points="16 16 12 12 8 16" />
+                            <line x1="12" y1="12" x2="12" y2="21" />
+                            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                        </svg>
+                    </div>
+                    <h3 style="margin-bottom: 8px; font-size: 1.2rem;">Select Video File</h3>
+                    <p style="color: var(--text3); margin-bottom: 24px; font-size: 0.95rem;">Drag and drop or click to
+                        browse files</p>
+                    <input type="file" id="videoFileInput" accept="video/*" hidden
+                        onchange="if(this.files.length > 0) { document.getElementById('selectedFileName').textContent = 'Selected: ' + this.files[0].name; document.getElementById('selectedFileName').style.display = 'block'; document.getElementById('uploadDetailsCard').classList.remove('hidden'); }" />
+                    <button class="upload-btn" id="uploadTrigger"
+                        onclick="document.getElementById('videoFileInput').click()"
+                        style="background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
+                        Browse Files
+                    </button>
+                    <div id="selectedFileName"
+                        style="margin-top: 16px; font-size: 0.9rem; color: var(--text2); display: none;"></div>
                 </div>
-                <h2>Upload a Video</h2>
-                <p>Drag and drop or click to select a video file</p>
-                <input type="file" id="videoFileInput" accept="video/*" hidden />
-                <button class="upload-btn" id="uploadTrigger">Select File</button>
-                <div class="upload-form hidden" id="uploadForm">
-                    <input type="text" id="uploadTitle" placeholder="Video title" />
-                    <input type="text" id="uploadTags" placeholder="Tags (comma separated)" />
-                    <button class="submit-btn" id="submitUpload">Publish Video</button>
+
+                <!-- Card 2: Metadata (hidden until file selected) -->
+                <div class="settings-group hidden" id="uploadDetailsCard"
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px;">
+                    <h3
+                        style="margin-bottom: 20px; font-size: 1.1rem; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                        Video Details</h3>
+
+                    <div class="input-group" style="margin-bottom: 16px;">
+                        <label
+                            style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text2);">Title</label>
+                        <input type="text" id="uploadTitle" placeholder="Enter video title"
+                            style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.95rem;" />
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 24px;">
+                        <label
+                            style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text2);">Tags</label>
+                        <input type="text" id="uploadTags" placeholder="e.g. gaming, funny, vlog (comma separated)"
+                            style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 0.95rem;" />
+                    </div>
+
+                    <button class="submit-btn" id="submitUpload"
+                        style="background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.2s;"
+                        onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                        Publish Video
+                    </button>
                 </div>
             </div>
         </section>
