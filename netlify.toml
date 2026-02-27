@@ -1,0 +1,10 @@
+# Netlify Configuration for StreamVault SPA
+
+[build]
+  command = ""
+  publish = "."
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

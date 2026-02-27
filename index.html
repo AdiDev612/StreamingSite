@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StreamVault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <!-- TOP NAV -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="#" class="logo">StreamVault</a>
+        </div>
+        <div class="topbar-right">
+            <div class="search-bar" id="searchBar">
+                <input type="text" placeholder="Search videos..." id="searchInput" />
+                <button class="search-btn" id="searchBtnToggle" aria-label="Search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
+            <button class="sign-in-btn" id="signInBtn">Sign In</button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="home" title="Home">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" data-page="favorites" title="Favorites">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                <span>Favorites</span>
+            </a>
+            <a href="#" class="nav-item" data-page="history" title="History">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="12 8 12 12 14 14" />
+                    <path d="M3.05 11a9 9 0 1 0 .5-4.28" />
+                    <polyline points="1 4 3 6 5 4" />
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item admin-only hidden" data-page="dashboard" title="Dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item admin-only hidden" data-page="upload" title="Upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 16 12 12 8 16" />
+                    <line x1="12" y1="12" x2="12" y2="21" />
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                </svg>
+                <span>Upload</span>
+            </a>
+            <a href="#" class="nav-item admin-only hidden" data-page="admin-logs" title="Admin Logs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Admin Logs</span>
+            </a>
+            <a href="#" class="nav-item" data-page="settings" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+        <!-- HOME PAGE -->
+        <section class="page active" id="page-home">
+            <div class="video-grid" id="videoGrid"></div>
+        </section>
+
+        <!-- FAVORITES PAGE -->
+        <section class="page" id="page-favorites">
+            <div class="page-header">
+                <h2>Your Favorites</h2>
+            </div>
+            <div class="video-grid" id="favGrid"></div>
+            <p class="empty-msg" id="favEmpty">No favorites yet. Like a video to save it here.</p>
+        </section>
+
+        <!-- HISTORY PAGE -->
+        <section class="page" id="page-history">
+            <div class="page-header">
+                <h2>Watch History</h2>
+                <button class="clear-btn" id="clearHistoryBtn">Clear History</button>
+            </div>
+            <div class="video-grid" id="historyGrid"></div>
+            <p class="empty-msg" id="historyEmpty">No watch history yet.</p>
+        </section>
+
+        <!-- UPLOAD PAGE -->
+        <section class="page admin-only hidden" id="page-upload">
+            <div class="upload-area">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polyline points="16 16 12 12 8 16" />
+                        <line x1="12" y1="12" x2="12" y2="21" />
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                    </svg>
+                </div>
+                <h2>Upload a Video</h2>
+                <p>Drag and drop or click to select a video file</p>
+                <input type="file" id="videoFileInput" accept="video/*" hidden />
+                <button class="upload-btn" id="uploadTrigger">Select File</button>
+                <div class="upload-form hidden" id="uploadForm">
+                    <input type="text" id="uploadTitle" placeholder="Video title" />
+                    <input type="text" id="uploadTags" placeholder="Tags (comma separated)" />
+                    <button class="submit-btn" id="submitUpload">Publish Video</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN DASHBOARD PAGE -->
+        <section class="page admin-only hidden" id="page-dashboard">
+            <div class="page-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <div class="dashboard-stats"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px;">
+                <div class="stat-card"
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center;">
+                    <div class="stat-icon" style="color: var(--accent); margin-bottom: 12px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 32px; height: 32px; display: inline-block;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="statTotalUsers"
+                        style="font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: 4px;">0</div>
+                    <div class="stat-label"
+                        style="font-size: 0.9rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px;">
+                        Registered Users</div>
+                </div>
+
+                <div class="stat-card"
+                    style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center;">
+                    <div class="stat-icon" style="color: var(--accent); margin-bottom: 12px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 32px; height: 32px; display: inline-block;">
+                            <path
+                                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z">
+                            </path>
+                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                        </svg>
+                    </div>
+                    <div class="stat-value" id="statTotalVideos"
+                        style="font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: 4px;">0</div>
+                    <div class="stat-label"
+                        style="font-size: 0.9rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px;">
+                        Uploaded Videos</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN LOGS PAGE -->
+        <section class="page admin-only hidden" id="page-admin-logs">
+            <div class="page-header">
+                <h2>Admin Logs</h2>
+                <button class="clear-btn" id="clearLogsBtn">Clear Logs</button>
+            </div>
+            <div class="logs-container" id="adminLogsContainer">
+                <!-- Logs will be inserted here -->
+            </div>
+            <p class="empty-msg" id="logsEmpty">No admin logs yet.</p>
+        </section>
+
+        <!-- SETTINGS PAGE -->
+        <section class="page" id="page-settings">
+            <div class="settings-container">
+                <h2>Settings</h2>
+                <!-- Layout group removed -->
+                <div class="settings-group">
+                    <label class="settings-label">Account</label>
+                    <div id="settingsProfile">
+                        <div class="account-profile">
+                            <div class="account-avatar" id="settingsAvatar">G</div>
+                            <div class="account-info">
+                                <span class="account-name" id="settingsUsername">Guest</span>
+                                <span class="account-email" id="settingsEmail">Not signed in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="settings-label">Privacy & Security</label>
+                    <div class="settings-item"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="color: var(--text);">Password</span>
+                        <a href="#" id="settingsChangePassword"
+                            style="color: var(--text3); font-size: 0.9rem; text-decoration: none;">Change
+                            password</a>
+                    </div>
+
+                    <div class="settings-item"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="color: var(--text);">Watch History</span>
+                        <a href="#" id="settingsViewHistory"
+                            style="color: var(--text3); font-size: 0.9rem; text-decoration: none;">View</a>
+                    </div>
+
+                    <div class="settings-item"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: var(--text);">Online Status</span>
+                        <div class="toggle" id="onlineStatusToggle" class="on" style="background: var(--accent);">
+                            <div class="toggle-thumb" style="transform: translateX(20px);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group" id="settingsAccountActions" style="display: none;">
+                    <label class="settings-label">Account Actions</label>
+                    <button id="settingsLogOutBtn"
+                        style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s;">
+                        Log out
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- WATCH PAGE (Replaces overlay) -->
+        <section class="page" id="page-watch">
+            <div class="watch-container">
+                <!-- Removed watch header and back button -->
+                <div class="watch-layout">
+                    <div class="watch-main">
+                        <div class="video-wrapper">
+                            <video id="mainPlayer" controls></video>
+                        </div>
+                        <div class="watch-info">
+                            <h1 class="watch-title" id="watchTitle"></h1>
+                            <div class="watch-meta">
+                                <span id="watchViews"></span>
+                                <span id="watchDate"></span>
+                                <button class="like-btn" id="likeBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                    <span id="likeCount"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="watch-sidebar">
+                        <h3 class="related-title">Related Videos</h3>
+                        <div id="relatedVideos" class="related-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SIGN IN / SIGN UP MODAL -->
+    <div class="modal-overlay hidden" id="signInModal">
+        <div class="modal">
+            <button class="modal-close" id="closeModal" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <!-- Brand -->
+            <div class="modal-brand">
+            </div>
+
+            <!-- Sign In Form -->
+            <!-- Sign In Form -->
+            <form class="auth-form" id="formSignIn">
+                <p class="auth-form-title">Welcome back</p>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg></span>
+                    <input type="text" id="siUsername" placeholder="Username" autocomplete="username" required />
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="siPassword" placeholder="Password" autocomplete="current-password"
+                        required />
+                    <button type="button" class="toggle-pw" data-target="siPassword" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-options">
+                    <label class="remember-me"><input type="checkbox" id="rememberMe" /> Remember me</label>
+                    <a href="#" class="forgot-link" id="goToForgot">Forgot password?</a>
+                </div>
+                <button type="submit" class="auth-submit-btn" id="authSubmitSignIn">
+                    <span>Sign In</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+                <button type="button" class="auth-link-btn" id="goToRegister">Don't have an account?
+                    <strong>Create
+                        one</strong></button>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form class="auth-form hidden" id="formForgot">
+                <!-- Step 1: Email -->
+                <div id="forgotStep1">
+                    <p class="auth-form-title">Reset Password</p>
+                    <p style="text-align: center; color: var(--text3); font-size: 0.85rem; margin-bottom: 12px;">Enter
+                        your email to receive a recovery code.</p>
+
+                    <div class="input-group">
+                        <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg></span>
+                        <input type="email" id="forgotEmail" placeholder="Email address" required />
+                    </div>
+
+                    <button type="button" class="auth-submit-btn" id="forgotSendCodeBtn">
+                        <span>Send Recovery Code</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </button>
+                    <button type="button" class="auth-link-btn" id="forgotToSignIn">Back to <strong>Sign
+                            in</strong></button>
+                </div>
+
+                <!-- Step 2: Code -->
+                <div id="forgotStep2" class="hidden">
+                    <p class="auth-form-title">Enter Code</p>
+                    <p style="text-align: center; color: var(--text3); font-size: 0.85rem; margin-bottom: 12px;"
+                        id="forgotCodeMsg">We sent a code to your email.</p>
+
+                    <div class="input-group">
+                        <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg></span>
+                        <input type="text" id="forgotCode" placeholder="Recovery Code" required />
+                    </div>
+
+                    <button type="button" class="auth-submit-btn" id="forgotVerifyCodeBtn">
+                        <span>Verify Code</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </button>
+                    <button type="button" class="auth-link-btn" id="forgotBackToEmailBtn">Back to
+                        <strong>Email</strong></button>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="forgotStep3" class="hidden">
+                    <p class="auth-form-title">New Password</p>
+                    <p style="text-align: center; color: var(--text3); font-size: 0.85rem; margin-bottom: 12px;">Create
+                        a new password for your account.</p>
+
+                    <div class="input-group">
+                        <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg></span>
+                        <input type="password" id="forgotNewPassword" placeholder="New Password (min. 8 characters)"
+                            minlength="8" required />
+                        <button type="button" class="toggle-pw" data-target="forgotNewPassword"
+                            aria-label="Show password">
+                            <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 12px;">
+                        <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg></span>
+                        <input type="password" id="forgotConfirmPassword" placeholder="Confirm New Password" required />
+                        <button type="button" class="toggle-pw" data-target="forgotConfirmPassword"
+                            aria-label="Show password">
+                            <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                <line x1="1" y1="1" x2="23" y2="23" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn" id="authSubmitForgot">
+                        <span>Reset Password</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <!-- Register Form -->
+            <form class="auth-form hidden" id="formRegister">
+                <p class="auth-form-title">Create account</p>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg></span>
+                    <input type="email" id="regEmail" placeholder="Email address" autocomplete="email" required />
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="regPassword" placeholder="Password (min. 8 characters)"
+                        autocomplete="new-password" minlength="8" required />
+                    <button type="button" class="toggle-pw" data-target="regPassword" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="regConfirm" placeholder="Confirm password" autocomplete="new-password"
+                        required />
+                    <button type="button" class="toggle-pw" data-target="regConfirm" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <label class="remember-me"><input type="checkbox" id="agreeTerms" required /> I agree to the <a
+                        href="#">Terms of Service</a></label>
+                <button type="submit" class="auth-submit-btn" id="authSubmitRegister">
+                    <span>Create Account</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+                <button type="button" class="auth-link-btn" id="goToSignIn">Already have an account?
+                    <strong>Sign
+                        in</strong></button>
+            </form>
+
+            <!-- Change Password Form (Settings) -->
+            <form class="auth-form hidden" id="formChangePassword">
+                <p class="auth-form-title">Change Password</p>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="cpCurrentPassword" placeholder="Current Password" required />
+                    <button type="button" class="toggle-pw" data-target="cpCurrentPassword" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="cpNewPassword" placeholder="New Password (min. 8 characters)"
+                        minlength="8" required />
+                    <button type="button" class="toggle-pw" data-target="cpNewPassword" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>
+                    <input type="password" id="cpConfirmPassword" placeholder="Confirm New Password" required />
+                    <button type="button" class="toggle-pw" data-target="cpConfirmPassword" aria-label="Show password">
+                        <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="eye-hide hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                            <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" class="auth-submit-btn" id="authSubmitChangePassword">
+                    <span>Update Password</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+            </form>
+
+            <p class="auth-error hidden" id="authError"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
