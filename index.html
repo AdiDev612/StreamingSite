@@ -38,6 +38,11 @@
             try {
                 const { data, error } = await client.auth.signInWithPassword({ email: email.trim(), password });
                 if (error) throw error;
+
+                // Fetch profile to check if admin
+                const { data: profile } = await client.from('profiles').select('*').eq('id', data.user.id).single();
+                const isAdmin = profile?.is_admin || false;
+
                 document.getElementById('signInModal').classList.add('hidden');
                 const topBtn = document.getElementById('signInBtn');
                 if (topBtn) {
@@ -50,8 +55,13 @@
                 const sUser = document.getElementById('settingsUsername');
                 if (sUser) sUser.textContent = email.split('@')[0];
                 const sEmail = document.getElementById('settingsEmail');
-                if (sEmail) sEmail.textContent = email;
+                if (sEmail) sEmail.textContent = email + (isAdmin ? ' (Admin)' : '');
                 const sActions = document.getElementById('settingsAccountActions');
+                if (sActions) sActions.style.display = 'block';
+
+                if (isAdmin) {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                }
                 if (sActions) sActions.style.display = 'block';
             } catch (err) {
                 alert('Sign in failed: ' + err.message);
@@ -82,6 +92,8 @@
                 if (sEmail) sEmail.textContent = 'Not signed in';
                 const sActions = document.getElementById('settingsAccountActions');
                 if (sActions) sActions.style.display = 'none';
+
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
 
                 // Redirect home
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
