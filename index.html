@@ -60,6 +60,42 @@
             }
         }
 
+        async function handleSignOut(event) {
+            if (event) event.preventDefault();
+            const client = _getClient(); if (!client) return;
+            const btn = document.getElementById('settingsLogOutBtn');
+            if (btn) btn.innerHTML = 'Logging out...';
+            try {
+                await client.auth.signOut();
+                // Clear state visuals
+                const topBtn = document.getElementById('signInBtn');
+                if (topBtn) {
+                    topBtn.textContent = 'Sign In';
+                    topBtn.classList.add('sign-in-btn');
+                    topBtn.classList.remove('user-avatar', 'logged-in');
+                }
+                const sAvatar = document.getElementById('settingsAvatar');
+                if (sAvatar) sAvatar.textContent = 'G';
+                const sUser = document.getElementById('settingsUsername');
+                if (sUser) sUser.textContent = 'Guest';
+                const sEmail = document.getElementById('settingsEmail');
+                if (sEmail) sEmail.textContent = 'Not signed in';
+                const sActions = document.getElementById('settingsAccountActions');
+                if (sActions) sActions.style.display = 'none';
+
+                // Redirect home
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-home').classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector('.nav-item[data-page="home"]').classList.add('active');
+
+            } catch (err) {
+                console.error('Sign out error:', err);
+            } finally {
+                if (btn) btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Log out`;
+            }
+        }
+
         async function handleSignUp(event) {
             if (event) event.preventDefault();
             const client = _getClient(); if (!client) return;
@@ -347,10 +383,18 @@
                     </div>
                 </div>
 
-                <div class="settings-group" id="settingsAccountActions" style="display: none;">
-                    <label class="settings-label">Account Actions</label>
-                    <button id="settingsLogOutBtn"
-                        style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s;">
+                <div class="settings-group" id="settingsAccountActions"
+                    style="display: none; padding: 0; background: transparent; border: none;">
+                    <button id="settingsLogOutBtn" onclick="handleSignOut(event)"
+                        style="background: var(--surface); color: #ff4d4d; border: 1px solid var(--border); padding: 16px; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s ease; text-align: left; display: flex; align-items: center; gap: 12px;"
+                        onmouseover="this.style.background='rgba(255, 77, 77, 0.1)';this.style.borderColor='#ff4d4d'"
+                        onmouseout="this.style.background='var(--surface)';this.style.borderColor='var(--border)'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 20px; height: 20px;">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
                         Log out
                     </button>
                 </div>
