@@ -62,6 +62,8 @@ const state = {
     compact: loadLocal('sv_compact', false),
 };
 
+window.state = state; // EXPOSE TO INLINE SCRIPTS (like handlePublishVideo in index.html)
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 function loadLocal(key, fallback) {
@@ -319,6 +321,8 @@ function showPage(name, pushState = true) {
 
 function renderPage(name) { showPage(name); }
 
+window.showPage = showPage;
+
 // ─── GRID RENDERING ───────────────────────────────────────────────────────────
 
 function renderGrid(videos, gridId) {
@@ -333,6 +337,8 @@ function renderGrid(videos, gridId) {
         grid.appendChild(card);
     });
 }
+
+window.renderGrid = renderGrid;
 
 function createCard(v) {
     const card = document.createElement('div');
@@ -1296,3 +1302,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM loaded, calling init().");
     init();
 });
+
+function seedVideosIfEmpty() {
+    // Graceful no-op fallback to prevent empty database reference errors.
+    console.log("Database handles initial videos; no local seed required.");
+}
