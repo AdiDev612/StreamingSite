@@ -9,20 +9,6 @@
   padding: 0;
 }
 
-/* Universal hidden utility — any element with class="hidden" is invisible */
-.hidden {
-  display: none !important;
-  pointer-events: none !important;
-}
-
-/* Modal overlay (only visible when .hidden is removed by JS) */
-.modal-overlay {
-  display: flex;
-}
-
-.watch-overlay {
-  display: block;
-}
 
 :root {
   --bg: #0f0f0f;
@@ -1326,4 +1312,20 @@ body {
     display: block;
     opacity: 1;
   }
+}
+
+/* =====================================================
+   HIDDEN UTILITY — MUST BE LAST IN FILE
+   Overrides all display rules for any element type
+   ===================================================== */
+.hidden,
+.modal-overlay.hidden,
+.auth-form.hidden,
+.page.hidden,
+.watch-overlay.hidden,
+.admin-only.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
 }
