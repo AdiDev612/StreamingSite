@@ -1219,13 +1219,27 @@ function updateAuthUI() {
     if (state.user) {
         topBarBtn.innerHTML = state.user.username.charAt(0).toUpperCase();
         topBarBtn.classList.remove('sign-in-btn');
-        topBarBtn.classList.add('user-profile-btn');
+        topBarBtn.classList.add('user-profile-btn', 'logged-in');
         topBarBtn.setAttribute('title', `@${state.user.username}`);
+
+        const sAvatar = document.getElementById('settingsAvatar');
+        if (sAvatar) sAvatar.textContent = state.user.username.charAt(0).toUpperCase();
+        const sUser = document.getElementById('settingsUsername');
+        if (sUser) sUser.textContent = state.user.username;
+        const sEmail = document.getElementById('settingsEmail');
+        if (sEmail) sEmail.textContent = state.user.email;
     } else {
         topBarBtn.innerHTML = 'Sign In';
-        topBarBtn.classList.remove('user-profile-btn');
+        topBarBtn.classList.remove('user-profile-btn', 'logged-in');
         topBarBtn.classList.add('sign-in-btn');
         topBarBtn.removeAttribute('title');
+
+        const sAvatar = document.getElementById('settingsAvatar');
+        if (sAvatar) sAvatar.textContent = 'G';
+        const sUser = document.getElementById('settingsUsername');
+        if (sUser) sUser.textContent = 'Guest';
+        const sEmail = document.getElementById('settingsEmail');
+        if (sEmail) sEmail.textContent = 'Not signed in';
     }
 
     // Toggle admin items
