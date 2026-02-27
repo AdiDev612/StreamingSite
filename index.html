@@ -45,6 +45,14 @@
                     topBtn.classList.remove('sign-in-btn');
                     topBtn.classList.add('user-avatar', 'logged-in');
                 }
+                const sAvatar = document.getElementById('settingsAvatar');
+                if (sAvatar) sAvatar.textContent = email.charAt(0).toUpperCase();
+                const sUser = document.getElementById('settingsUsername');
+                if (sUser) sUser.textContent = email.split('@')[0];
+                const sEmail = document.getElementById('settingsEmail');
+                if (sEmail) sEmail.textContent = email;
+                const sActions = document.getElementById('settingsAccountActions');
+                if (sActions) sActions.style.display = 'block';
             } catch (err) {
                 alert('Sign in failed: ' + err.message);
             } finally {
