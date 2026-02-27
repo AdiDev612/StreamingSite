@@ -147,7 +147,11 @@
 
                 const { error: uploadError } = await client.storage
                     .from('videos')
-                    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        contentType: file.type
+                    });
 
                 if (uploadError) {
                     throw new Error('Storage upload failed (Does the "videos" bucket exist?): ' + uploadError.message);
