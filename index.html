@@ -28,7 +28,8 @@
         <div class="topbar-right">
             <div class="search-bar" id="searchBar">
                 <input type="text" placeholder="Search videos..." id="searchInput" />
-                <button class="search-btn" id="searchBtnToggle" aria-label="Search">
+                <button class="search-btn" id="searchBtnToggle" aria-label="Search"
+                    onclick="document.getElementById('searchBar').classList.toggle('active');document.getElementById('searchInput').focus()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -43,20 +44,23 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active" data-page="home" title="Home">
+            <a href="#" class="nav-item active" data-page="home" title="Home"
+                onclick="event.preventDefault();showPage('home');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                 </svg>
                 <span>Home</span>
             </a>
-            <a href="#" class="nav-item" data-page="favorites" title="Favorites">
+            <a href="#" class="nav-item" data-page="favorites" title="Favorites"
+                onclick="event.preventDefault();showPage('favorites');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path
                         d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
                 <span>Favorites</span>
             </a>
-            <a href="#" class="nav-item" data-page="history" title="History">
+            <a href="#" class="nav-item" data-page="history" title="History"
+                onclick="event.preventDefault();showPage('history');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="12 8 12 12 14 14" />
                     <path d="M3.05 11a9 9 0 1 0 .5-4.28" />
@@ -91,7 +95,8 @@
                 </svg>
                 <span>Admin Logs</span>
             </a>
-            <a href="#" class="nav-item" data-page="settings" title="Settings">
+            <a href="#" class="nav-item" data-page="settings" title="Settings"
+                onclick="event.preventDefault();showPage('settings');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="3" />
                     <path
